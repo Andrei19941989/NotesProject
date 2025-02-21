@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:latest
+    container_name: notes-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: notesdb
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "3306:3306"
+
+  app:
+    build: .
+    container_name: notes-app
+    depends_on:
+      - db
+    environment:
+      DB_URL: "jdbc:mysql://db:3306/notesdb?useSSL=false&allowPublicKeyRetrieval=true"
+      DB_USER: "root"
+      DB_PASSWORD: "Plm19941967"
