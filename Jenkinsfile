@@ -2,50 +2,50 @@ pipeline {
     agent any
 
     environment {
-        DB_URL = "jdbc:mysql://db:3306/notesdb?useSSL=false&allowPublicKeyRetrieval=true"
-        DB_USER = "root"
-        DB_PASSWORD = "Plm19941967"
+        IMAGE_NAME = "notes-app"
+        CONTAINER_NAME = "notes-app"
+        DB_CONTAINER_NAME = "notes-mysql"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/Andrei19941989/NotesProject.git'
+                git 'https://github.com/your-repo.git' // Замените на свой репозиторий
             }
         }
 
-        stage('Build') {
+        stage('Build JAR') {
             steps {
-                script {
-                    sh 'docker build -t notes-app .'
-                }
+                sh './gradlew build' // Если используете Gradle
+                // sh 'mvn package -DskipTests' // Если используете Maven
             }
         }
 
-        stage('Run Containers') {
+        stage('Build Docker Image') {
             steps {
-                script {
-                    sh 'docker-compose down' 
-                    sh 'docker-compose up -d'
-                }
+                sh 'docker build -t ${IMAGE_NAME} .'
             }
         }
 
-        stage('Test') {
+        stage('Run Docker Containers') {
             steps {
-                script {
-                    sleep 10 
-                    sh 'docker ps' 
-                }
+                sh 'docker-compose up -d'
             }
         }
 
-        stage('Cleanup') {
+        stage('Check Running Containers') {
             steps {
-                script {
-                    sh 'docker system prune -f' 
-                }
+                sh 'docker ps'
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline завершён'
+        }
+        failure {
+            echo 'Что-то пошло не так...'
         }
     }
 }
