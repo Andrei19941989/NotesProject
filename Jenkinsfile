@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/your-repo.git' // Замените на свой репозиторий
+                git 'https://github.com/Andrei19941989/NotesProject' // Замените на свой репозиторий
             }
         }
 
